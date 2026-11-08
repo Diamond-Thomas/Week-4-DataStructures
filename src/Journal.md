@@ -1,0 +1,3 @@
+
+### Why is a Queue the appropriate data structure for a message broker rather than a Stack? What would happen to the order of messages if you used a Stack instead?
+Queue is a more appropriate data structure for a message broker rather than a Stack because it will process what it receives and sends out messages in the order that it gets it. A stack is last in first out(LIFO) so the requests will be printed backward while a Queue will be first in first out (FIFO) so it will be printed in order.

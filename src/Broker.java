@@ -1,13 +1,15 @@
 import java.util.Random;
 
-public class Broker{
+public class Broker {
     private QueueInterface<Message> Q;
+    private QueueInterface<Message> deadLetterQueue;
+    private final int MAX_RETRIES = 3;
 
-    void processBatch(){
+    void processBatch() {
         Random random = new Random();
 
-        int batchSize = Q.size();
-        for(int i = 0; i < batchSize; i++) {
+        while (!Q.isEmpty()) {
+
             Message current = Q.dequeue();
 
             int roll = random.nextInt(100);
@@ -19,19 +21,38 @@ public class Broker{
 
                 current.retryCount++;
 
-                Q.enqueue(current);
+                if (current.retryCount >= MAX_RETRIES) {
 
-                System.out.println("FAILED: " + current);
+                    deadLetterQueue.enqueue(current);
+
+                    System.out.println("MOVED TO DLQ: " + current);
+
+                } else {
+
+                    Q.enqueue(current);
+
+                    System.out.println("FAILED: " + current);
+
+                }
             }
         }
     }
 
-    public void addMessage(Message message) {
-        Q.enqueue(message);
+    public void addMessage (Message message){
+            Q.enqueue(message);
     }
 
+
     public Broker() {
-        Q = new ArrayUnboundedQueue<>();
+            Q = new ArrayUnboundedQueue<>();
+            deadLetterQueue = new ArrayUnboundedQueue<>();
     }
+
+    public void viewAndClearDLQMessages() {
+        while (!deadLetterQueue.isEmpty()) {
+            System.out.println(deadLetterQueue.dequeue());
+        }
+    }
+
 
 }

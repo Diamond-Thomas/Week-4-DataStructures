@@ -29,13 +29,6 @@ public class Message {
         broker.addMessage(new Message("3", "Third", 10));
 
         broker.processBatch();
-        System.out.println("---");
-        broker.processBatch();
-        System.out.println("---");
-        broker.processBatch();
-        System.out.println("---");
-        broker.processBatch();
-        System.out.println("---");
 
     }
 

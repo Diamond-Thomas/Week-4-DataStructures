@@ -2,39 +2,41 @@ public class Message {
     String messageId;
     String payload;
     int retryCount = 0;
+    int successChance;
 
-    public Message(String messageId, String payload) {
+    public Message(String messageId, String payload, int successChance) {
         this.messageId = messageId;
         this.payload = payload;
+        this.successChance = successChance;
     }
 
     @Override
     public String toString() {
-        return "Message ID: " + messageId +
-                ", Payload: " + payload +
-                ", Retry Count: " + retryCount;
+        return "Message ID: " + messageId + ", Payload: " + payload + ", Retry Count: " + retryCount + ", Success Chance: " + successChance;
     }
 
 
 
 
-
-
-
-
+    // TESTER
 
     public static void main(String[] args) {
 
-        ArrayUnboundedQueue<Message> queue = new ArrayUnboundedQueue<>();
+        Broker broker = new Broker();
 
-        queue.enqueue(new Message("1", "First"));
-        queue.enqueue(new Message("2", "Second"));
-        queue.enqueue(new Message("3", "Third"));
+        broker.addMessage(new Message("1", "First", 90));
+        broker.addMessage(new Message("2", "Second", 50));
+        broker.addMessage(new Message("3", "Third", 10));
 
+        broker.processBatch();
+        System.out.println("---");
+        broker.processBatch();
+        System.out.println("---");
+        broker.processBatch();
+        System.out.println("---");
+        broker.processBatch();
+        System.out.println("---");
 
-        System.out.println(queue.dequeue());
-        System.out.println(queue.dequeue());
-        System.out.println(queue.dequeue());
     }
 
 
